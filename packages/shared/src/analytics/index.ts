@@ -118,10 +118,10 @@ export class Analytics {
       event.currentUrl = globalThis.location.href;
     }
     const axios = this.lazyAxios();
-    await axios.post(TRACK_EVENT_PATH, {
-      eventName,
-      eventProps: event,
-    });
+    // await axios.post(TRACK_EVENT_PATH, {
+    //   eventName,
+    //   eventProps: event,
+    // });
   }
 
   private async requestUserProfile(attributes: Record<string, any>) {
@@ -129,13 +129,13 @@ export class Analytics {
       return;
     }
     const axios = this.lazyAxios();
-    await axios.post(TRACK_ATTRIBUTES_PATH, {
-      distinctId: this.instanceId,
-      attributes: {
-        ...attributes,
-        ...(await this.lazyDeviceInfo()),
-      },
-    });
+    // await axios.post(TRACK_ATTRIBUTES_PATH, {
+    //   distinctId: this.instanceId,
+    //   attributes: {
+    //     ...attributes,
+    //     ...(await this.lazyDeviceInfo()),
+    //   },
+    // });
   }
 
   public updateUserProfile(attributes: {

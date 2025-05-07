@@ -1,6 +1,6 @@
 const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
-const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
+// const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 const babelTools = require('../babelTools');
 const utils = require('./utils');
 
@@ -26,18 +26,18 @@ module.exports = ({ platform, basePath }) => {
       clean: true,
     },
     plugins: [
-      sentryWebpackPlugin({
-        org: 'onekey-bb',
-        debug: false,
-        project: process.env.SENTRY_PROJECT,
-        authToken: process.env.SENTRY_TOKEN,
-        release: {
-          name: `${process.env.VERSION} (${process.env.BUILD_NUMBER})`,
-        },
-        sourcemaps: {
-          filesToDeleteAfterUpload,
-        },
-      }),
+      // sentryWebpackPlugin({
+      //   org: 'onekey-bb',
+      //   debug: false,
+      //   project: process.env.SENTRY_PROJECT,
+      //   authToken: process.env.SENTRY_TOKEN,
+      //   release: {
+      //     name: `${process.env.VERSION} (${process.env.BUILD_NUMBER})`,
+      //   },
+      //   sourcemaps: {
+      //     filesToDeleteAfterUpload,
+      //   },
+      // }),
     ],
     optimization: {
       minimizer: [

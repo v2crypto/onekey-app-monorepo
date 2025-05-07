@@ -55,15 +55,18 @@ async function hardwareEvmSignTransaction({
   chainId,
   unsignedTx,
   deviceParams,
+  connectId, 
+  deviceId
 }: {
   sdk: CoreApi;
   path: string;
   chainId: number;
   unsignedTx: IUnsignedTxPro;
   deviceParams: IDeviceSharedCallParams;
+  connectId: string; 
+  deviceId: string;
 }): Promise<ISignedTxPro> {
   const { dbDevice, deviceCommonParams } = checkIsDefined(deviceParams);
-  const { connectId = '', deviceId } = dbDevice;
 
   let response: IDeviceResponseResult<EVMSignedTx> | undefined;
   const encodedTx = unsignedTx.encodedTx as IEncodedTxEvm;
@@ -156,12 +159,15 @@ export class KeyringHardware extends KeyringHardwareBase {
     const path = await this.vault.getAccountPath();
     const chainId = await this.getNetworkChainId();
     const { unsignedTx } = params;
+    const { connectId, deviceId } = await this.getFirstHdInfo();
     return hardwareEvmSignTransaction({
       sdk,
       path,
       chainId: Number(chainId),
       unsignedTx,
       deviceParams: checkIsDefined(params.deviceParams),
+      connectId, 
+      deviceId
     });
   }
 
@@ -187,7 +193,8 @@ export class KeyringHardware extends KeyringHardwareBase {
       throw new Error('deviceParams is undefined');
     }
     const { dbDevice, deviceCommonParams } = deviceParams;
-    const { connectId, deviceId } = dbDevice;
+
+    const { connectId, deviceId } = await this.getFirstHdInfo();
 
     const sdk = await this.getHardwareSDKInstance();
     const path = await this.vault.getAccountPath();
@@ -217,7 +224,7 @@ export class KeyringHardware extends KeyringHardwareBase {
         messageHex = Buffer.from(message.message, 'utf-8').toString('hex');
       }
 
-      const res = await sdk.evmSignMessage(connectId, deviceId, {
+      const res = await sdk.evmSignMessage(connectId as string, deviceId as string, {
         path,
         messageHex,
         chainId,
@@ -252,7 +259,7 @@ export class KeyringHardware extends KeyringHardwareBase {
         useV4,
       ).toString('hex');
 
-      const res = await sdk.evmSignTypedData(connectId, deviceId, {
+      const res = await sdk.evmSignTypedData(connectId as string, deviceId as string, {
         path,
         metamaskV4Compat: !!useV4,
         data,

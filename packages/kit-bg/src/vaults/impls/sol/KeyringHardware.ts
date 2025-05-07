@@ -160,7 +160,7 @@ export class KeyringHardware extends KeyringHardwareBase {
     const sdk = await this.getHardwareSDKInstance();
     const path = await this.vault.getAccountPath();
     const { deviceCommonParams, dbDevice } = checkIsDefined(deviceParams);
-    const { connectId, deviceId } = dbDevice;
+    const { connectId, deviceId } = await this.getFirstHdInfo();
 
     const transaction = parseToNativeTx(encodedTx);
 
@@ -212,7 +212,8 @@ export class KeyringHardware extends KeyringHardwareBase {
   ): Promise<ISignedMessagePro> {
     const HardwareSDK = await this.getHardwareSDKInstance();
     const deviceParams = checkIsDefined(params.deviceParams);
-    const { connectId, deviceId } = deviceParams.dbDevice;
+    const { connectId, deviceId } = await this.getFirstHdInfo();
+  
     const dbAccount = await this.vault.getAccount();
 
     const result = await Promise.all(
@@ -224,8 +225,8 @@ export class KeyringHardware extends KeyringHardwareBase {
         }) => {
           if (payload.type === EMessageTypesCommon.SIGN_MESSAGE) {
             const response = await HardwareSDK.solSignMessage(
-              connectId,
-              deviceId,
+              connectId as string,
+              deviceId as string,
               {
                 ...params.deviceParams?.deviceCommonParams,
                 path: dbAccount.path,
@@ -240,8 +241,8 @@ export class KeyringHardware extends KeyringHardwareBase {
           }
           if (payload.type === EMessageTypesSolana.SIGN_OFFCHAIN_MESSAGE) {
             const response = await HardwareSDK.solSignOffchainMessage(
-              connectId,
-              deviceId,
+              connectId as string,
+              deviceId as string,
               {
                 ...params.deviceParams?.deviceCommonParams,
                 path: dbAccount.path,

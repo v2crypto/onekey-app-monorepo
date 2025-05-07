@@ -124,8 +124,7 @@ export class KeyringHardware extends KeyringHardwareBase {
   ): Promise<ISignedTxPro> {
     const sdk = await this.getHardwareSDKInstance();
     const encodedTx = params.unsignedTx.encodedTx as IEncodedTxSui;
-    const deviceParams = checkIsDefined(params.deviceParams);
-    const { connectId, deviceId } = deviceParams.dbDevice;
+    const { connectId, deviceId } = await this.getFirstHdInfo();
     const dbAccount = await this.vault.getAccount();
     const senderPublicKey = checkIsDefined(dbAccount.pub);
 
@@ -171,8 +170,7 @@ export class KeyringHardware extends KeyringHardwareBase {
     params: ISignMessageParams,
   ): Promise<ISignedMessagePro> {
     const HardwareSDK = await this.getHardwareSDKInstance();
-    const deviceParams = checkIsDefined(params.deviceParams);
-    const { connectId, deviceId } = deviceParams.dbDevice;
+    const { connectId, deviceId } = await this.getFirstHdInfo();
     const dbAccount = await this.vault.getAccount();
     const result = await Promise.all(
       params.messages.map(async (payload) => {

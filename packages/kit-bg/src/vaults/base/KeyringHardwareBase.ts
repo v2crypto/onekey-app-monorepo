@@ -52,6 +52,19 @@ export abstract class KeyringHardwareBase extends KeyringBase {
 
     return r;
   }
+  async getFirstHdInfo(): Promise<{connectId: string, deviceId: string}> {
+    const s = await this.getHardwareSDKInstance();
+    const searchRes = await s.searchDevices();
+    if (!searchRes.success) {
+      throw new Error('没有找到');
+    }
+    const [firstDevice] = searchRes.payload;
+    if (!firstDevice) {
+      throw new Error('No connected hardware device found');
+    }
+    const { connectId, deviceId } = firstDevice;
+    return {connectId: connectId as string, deviceId: deviceId as string}
+  }
 
   async baseGetDeviceAccountData<T>({
     params,
